@@ -67,7 +67,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">Generator No. BA</h1>
-                    <p class="text-xs text-sky-200">Berita Acara Digital System</p>
+                    <p class="text-xs text-sky-200">Berita Acara Digital System (Multi-User)</p>
                 </div>
             </div>
             <button onclick="toggleSettingsModal()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition active:scale-95" title="Pengaturan Spreadsheet">
@@ -82,7 +82,7 @@
                 <span id="syncStatusText" class="font-medium text-slate-200">Mode Lokal (Belum Terhubung Sheet)</span>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="syncWithServer()" class="bg-white/10 hover:bg-white/20 text-sky-200 px-2.5 py-1 rounded-lg font-semibold text-[11px] flex items-center space-x-1 transition active:scale-95" title="Sinkronkan Nomor Urut Terbaru">
+                <button onclick="syncWithServer(false)" class="bg-white/10 hover:bg-white/20 text-sky-200 px-2.5 py-1 rounded-lg font-semibold text-[11px] flex items-center space-x-1 transition active:scale-95" title="Sinkronkan Data Terbaru">
                     <i class="fa-solid fa-rotate text-[10px]" id="syncIcon"></i>
                     <span>Sync</span>
                 </button>
@@ -112,14 +112,14 @@
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-4">
             
-            <!-- Step 1: Dropdown Unit Kantor (7 Options) -->
+            <!-- Step 1: Dropdown Unit Kantor -->
             <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                     <i class="fa-solid fa-building text-sky-600 mr-1.5"></i> 1. Pilih Unit Kantor
                 </label>
                 <div class="relative">
                     <select id="unitSelect" onchange="updateStepProgress()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-3.5 pr-10 appearance-none focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition font-medium">
-                        <option value="" disabled selected>-- Pilih Salah Satu Unit (7 Option) --</option>
+                        <option value="" disabled selected>-- Pilih Salah Satu Unit --</option>
                         <option value="MTR" data-fullname="ULP MATIROTASI">1. ULP MATIROTASI (MTR)</option>
                         <option value="BRR" data-fullname="ULP BARRU">2. ULP BARRU (BRR)</option>
                         <option value="RPG" data-fullname="ULP RAPPANG">3. ULP RAPPANG (RPG)</option>
@@ -146,10 +146,10 @@
             <div class="grid grid-cols-2 gap-3 pt-1">
                 <div>
                     <label class="block text-[11px] font-semibold text-slate-500 mb-1">Tanggal BA</label>
-                    <input type="date" id="tanggalInput" class="w-full bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <input type="date" id="tanggalInput" onchange="updateStepProgress()" class="w-full bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nomor Urut Berikutnya</label>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Nomor Urut Terkini</label>
                     <div class="flex items-center bg-slate-100 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-700">
                         <span>#</span>
                         <span id="nextCounterDisplay" class="ml-1 text-sky-700">001</span>
@@ -169,15 +169,15 @@
 
             <!-- Step 3: Generate Button -->
             <button id="btnGenerate" onclick="generateNomorBA()" class="w-full bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-sky-500/25 active:scale-[0.98] transition flex items-center justify-center space-x-2 text-sm">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <span>Generate Nomor Berita Acara</span>
+                <i class="fa-solid fa-wand-magic-sparkles" id="generateIcon"></i>
+                <span id="generateBtnText">Generate Nomor Berita Acara</span>
             </button>
         </div>
 
         <div class="space-y-3">
             <div class="flex items-center justify-between">
                 <h2 class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-clock-rotate-left mr-1.5 text-sky-600"></i> Riwayat Penomoran
+                    <i class="fa-solid fa-clock-rotate-left mr-1.5 text-sky-600"></i> Riwayat Penomoran Multi-User
                 </h2>
                 <div class="flex items-center space-x-2">
                     <button onclick="exportToCSV()" class="text-xs text-sky-600 hover:text-sky-800 font-medium flex items-center space-x-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-sm">
@@ -189,7 +189,7 @@
 
             <!-- Search Filter -->
             <div class="relative">
-                <input type="text" id="searchInput" onkeyup="filterHistory()" placeholder="Cari nomor atau perihal..." class="w-full bg-white border border-slate-200 text-xs rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm">
+                <input type="text" id="searchInput" onkeyup="filterHistory()" placeholder="Cari nomor, unit, atau perihal..." class="w-full bg-white border border-slate-200 text-xs rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
             </div>
 
@@ -250,7 +250,7 @@
             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs">
                 <div class="flex justify-between"><span class="text-slate-400">Perihal:</span> <span id="generatedPerihalDisplay" class="font-medium text-slate-700 text-right max-w-[200px] truncate">---</span></div>
                 <div class="flex justify-between"><span class="text-slate-400">Tanggal BA:</span> <span id="generatedTanggalDisplay" class="font-medium text-slate-700">---</span></div>
-                <div class="flex justify-between"><span class="text-slate-400">Status Sheet:</span> <span id="generatedSheetStatus" class="font-semibold text-sky-600">Terhubung</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Status Sheet:</span> <span id="generatedSheetStatus" class="font-semibold text-sky-600">Tersimpan di Sheet</span></div>
             </div>
 
             <!-- Quick Action Buttons -->
@@ -337,7 +337,7 @@
         <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 fade-in shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="font-bold text-slate-800 text-sm flex items-center">
-                    <i class="fa-solid fa-file-code text-emerald-600 mr-2"></i> Kode Google Apps Script
+                    <i class="fa-solid fa-file-code text-emerald-600 mr-2"></i> Kode Google Apps Script Backend
                 </h3>
                 <button onclick="closeScriptGuide()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
                     <i class="fa-solid fa-xmark text-sm"></i>
@@ -345,14 +345,15 @@
             </div>
 
             <div class="text-xs text-slate-600 space-y-2 leading-relaxed">
-                <p><strong>Langkah Setup Multi-User Google Sheet:</strong></p>
+                <p><strong>Panduan Penting Google Apps Script:</strong></p>
                 <ol class="list-decimal pl-4 space-y-1 text-slate-500">
-                    <li>Buka Google Spreadsheet yang digunakan tim.</li>
-                    <li>Klik menu <strong>Extensions (Ekstensi) &gt; Apps Script</strong>.</li>
-                    <li>Ganti seluruh kode dengan kode di bawah.</li>
-                    <li>Klik <strong>Deploy &gt; New Deployment</strong>. Pilih type <strong>Web App</strong>.</li>
-                    <li>Atur <em>Execute as</em>: <strong>Me</strong> dan <em>Who has access</em>: <strong>Anyone</strong>.</li>
-                    <li>Salin Web App URL dan tempelkan ke Pengaturan.</li>
+                    <li>Buka Google Spreadsheet.</li>
+                    <li>Masuk ke <strong>Extensions &gt; Apps Script</strong>.</li>
+                    <li>Ganti seluruh isi kode dengan script backend yang sudah disesuaikan.</li>
+                    <li>Klik <strong>Deploy &gt; Manage Deployments &gt; New Deployment</strong>.</li>
+                    <li>Pilih Type: <strong>Web App</strong>.</li>
+                    <li><em>Execute as:</em> <strong>Me</strong>.</li>
+                    <li><em>Who has access:</em> <strong>Anyone (Siapa saja)</strong> &larr; Wajib!</li>
                 </ol>
             </div>
 
@@ -362,6 +363,7 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-2xl z-50 transition-all transform translate-y-20 opacity-0 flex items-center space-x-2 pointer-events-none">
         <i id="toastIcon" class="fa-solid fa-circle-info text-sky-400"></i>
         <span id="toastMsg">Pesan Notifikasi</span>
@@ -369,7 +371,7 @@
 
     <script>
         const APP_STORAGE_KEY = 'BERITA_ACARA_APP_DATA';
-        const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbGlIta_XzOz1EW7T_s88m5ODSwFrwPDu6xB93WC3VpOjBiPWDYOVg8cQGgKgcEQBZWdA/exec';
+        const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxGlIta_XzOz1EW7T_s88m5ODSwFrwPDu6xB93WC3VpOjBiPWDYOVg8cQGgKgcEQBZWdA/exec';
         const DEFAULT_PATTERN = '{NO}.BA/P2TL/{UNIT}/DIS.01.03/160600/{YEAR}';
         
         let appState = {
@@ -386,76 +388,107 @@
             document.getElementById('tanggalInput').valueAsDate = new Date();
             updateStepProgress();
             renderHistory();
-            updateSyncStatusUI();
             
-            // Auto sync with server on app load
-            if (appState.webhookUrl) {
+            // Initial sync on startup
+            syncWithServer(true);
+
+            // Auto-sync when tab gains focus (for multi-user real-time feel)
+            window.addEventListener('focus', () => {
                 syncWithServer(true);
-            }
+            });
+
+            // Periodic background sync every 30 seconds
+            setInterval(() => {
+                if (document.visibilityState === 'visible') {
+                    syncWithServer(true);
+                }
+            }, 30000);
         });
 
         function loadSavedState() {
-        // 1. Paksa isi Webhook URL di awal
-    appState.webhookUrl = DEFAULT_WEBHOOK_URL;
-
-    const saved = localStorage.getItem(APP_STORAGE_KEY);
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved);
-            // Gabungkan data simpanan (riwayat & counter)
-            appState = Object.assign(appState, parsed);
-            
-            // Tetap kunci Webhook URL ke default
+            // Always force the exact hardcoded Apps Script Webhook URL
             appState.webhookUrl = DEFAULT_WEBHOOK_URL;
 
-            if (!appState.pattern || appState.pattern.includes('/BA-')) {
-                appState.pattern = DEFAULT_PATTERN;
+            const saved = localStorage.getItem(APP_STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    delete parsed.webhookUrl; // Prevent stale/empty localStorage URL from overriding
+                    appState = Object.assign(appState, parsed);
+                } catch (e) {
+                    console.error('Error reading localStorage', e);
+                }
             }
-        } catch (e) {
-            console.error('Error reading localStorage', e);
+
+            appState.webhookUrl = DEFAULT_WEBHOOK_URL;
+
+            if (!appState.pattern) appState.pattern = DEFAULT_PATTERN;
+
+            document.getElementById('nextCounterDisplay').textContent = String(appState.counter).padStart(3, '0');
         }
-    }
 
-    if (!appState.pattern) {
-        appState.pattern = DEFAULT_PATTERN;
-    }
-
-    document.getElementById('nextCounterDisplay').textContent = String(appState.counter).padStart(3, '0');
-    document.getElementById('sheetWebhookUrl').value = appState.webhookUrl;
-    document.getElementById('patternInput').value = appState.pattern;
-    document.getElementById('customCounterInput').value = appState.counter;
-}
         function saveState() {
             localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appState));
-            updateSyncStatusUI();
         }
 
-        function resetDefaultPattern() {
-            appState.pattern = DEFAULT_PATTERN;
-            document.getElementById('patternInput').value = DEFAULT_PATTERN;
-            saveState();
-            updateStepProgress();
-            showToast("Format berhasil direset ke standar PLN/P2TL!", "info");
-        }
-
-        function updateSyncStatusUI() {
+        function updateSyncStatusUI(isOnline = null) {
             const dot = document.getElementById('syncStatusDot');
             const text = document.getElementById('syncStatusText');
-            if (appState.webhookUrl && appState.webhookUrl.trim().length > 10) {
+            
+            if (isOnline === true || isOnline === 'online') {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                text.textContent = "Multi-User Active (Terhubung Sheet)";
+                text.textContent = "Multi-User Sync Active";
+            } else if (isOnline === false || isOnline === 'offline') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse";
+                text.textContent = "Gagal Terhubung (Cek Akses Script)";
             } else {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
-                text.textContent = "Mode Lokal (Belum Terhubung Sheet)";
+                text.textContent = "Menghubungkan ke Sheet...";
+            }
+        }
+
+        /**
+         * Universal Multi-Browser Network Fetch Helper for Google Apps Script Web Apps
+         * Prevents CORS Preflight failures by using text/plain and URL parameters fallback
+         */
+        async function sendAppsScriptRequest(urlStr, payloadData) {
+            try {
+                // Try JSON stringified POST with text/plain (bypasses CORS preflight)
+                const res = await fetch(urlStr, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payloadData),
+                    redirect: 'follow',
+                    cache: 'no-store'
+                });
+                return await res.json();
+            } catch (err) {
+                console.warn("POST fetch error, trying URL query fallback:", err);
+                
+                // Fallback: GET request with query params
+                try {
+                    const fallbackUrl = new URL(urlStr);
+                    Object.keys(payloadData).forEach(k => {
+                        fallbackUrl.searchParams.set(k, typeof payloadData[k] === 'object' ? JSON.stringify(payloadData[k]) : payloadData[k]);
+                    });
+                    fallbackUrl.searchParams.set('_t', Date.now());
+
+                    const getRes = await fetch(fallbackUrl.toString(), {
+                        method: 'GET',
+                        redirect: 'follow',
+                        cache: 'no-store'
+                    });
+                    return await getRes.json();
+                } catch (fallbackErr) {
+                    console.error("All request methods failed:", fallbackErr);
+                    throw fallbackErr;
+                }
             }
         }
 
         async function syncWithServer(silent = false) {
-            if (!appState.webhookUrl || appState.webhookUrl.trim().length < 10) {
-                if (!silent) showToast("Masukkan Web App URL di Pengaturan terlebih dahulu", "warning");
-                return;
-            }
-
+            updateSyncStatusUI('connecting');
+            
             const icon = document.getElementById('syncIcon');
             if (icon) icon.classList.add('animate-spin');
 
@@ -464,7 +497,12 @@
                 syncUrl.searchParams.set('action', 'read');
                 syncUrl.searchParams.set('_t', Date.now());
 
-                const response = await fetch(syncUrl.toString(), { method: 'GET', redirect: 'follow' });
+                const response = await fetch(syncUrl.toString(), {
+                    method: 'GET',
+                    redirect: 'follow',
+                    cache: 'no-store'
+                });
+                
                 const result = await response.json();
 
                 if (result && (result.status === "success" || result.result === "success")) {
@@ -473,12 +511,11 @@
                         appState.counter = parseInt(newCounter);
                     }
 
-                    if (result.history && Array.isArray(result.history) && result.history.length > 0) {
+                    if (result.history && Array.isArray(result.history)) {
                         appState.history = result.history.map((item, index) => {
                             let uCode = item.unitCode || item.unit_code || '';
                             let uName = item.unit || item.unitName || item.unit_name || 'UNIT';
 
-                            // Auto map unit code if missing or identical to unit name
                             if (!uCode || uCode === uName) {
                                 const matchedOpt = Array.from(document.getElementById('unitSelect').options)
                                     .find(opt => opt.value === uName || opt.getAttribute('data-fullname') === uName || opt.text.includes(uName));
@@ -491,7 +528,7 @@
                             }
 
                             return {
-                                id: item.id || (Date.now() + index),
+                                id: item.id || ("BA-" + (Date.now() + index)),
                                 nomor: item.nomor,
                                 counter: item.seq || item.counter,
                                 unitCode: uCode,
@@ -507,14 +544,20 @@
                     saveState();
                     updateStepProgress();
                     renderHistory();
+                    updateSyncStatusUI(true);
                     if (!silent) showToast(`Tersinkronkan! Nomor berikutnya: #${String(appState.counter).padStart(3, '0')}`, "success");
+                    return true;
+                } else {
+                    updateSyncStatusUI(false);
                 }
             } catch (err) {
                 console.warn("Sync error:", err);
-                if (!silent) showToast("Gagal terhubung ke Sheet. Menggunakan mode lokal.", "warning");
+                updateSyncStatusUI(false);
+                if (!silent) showToast("Gagal sinkron dengan Google Sheet", "warning");
             } finally {
                 if (icon) icon.classList.remove('animate-spin');
             }
+            return false;
         }
 
         function formatNumber(counter, unitCode, dateObj) {
@@ -583,6 +626,9 @@
             const unitSelect = document.getElementById('unitSelect');
             const perihalInput = document.getElementById('perihalInput');
             const tanggalInput = document.getElementById('tanggalInput');
+            const btnGenerate = document.getElementById('btnGenerate');
+            const btnIcon = document.getElementById('generateIcon');
+            const btnText = document.getElementById('generateBtnText');
 
             if (!unitSelect.value) {
                 showToast("Silakan pilih Unit Kantor terlebih dahulu!", "warning");
@@ -594,6 +640,16 @@
                 showToast("Tuliskan keterangan perihal Berita Acara!", "warning");
                 perihalInput.focus();
                 return;
+            }
+
+            // Lock UI & Show Loading Spinner
+            btnGenerate.disabled = true;
+            btnIcon.className = "fa-solid fa-spinner animate-spin";
+            btnText.textContent = "Menyingkronkan Nomor Terkini...";
+
+            // REAL-TIME LOCK: Re-sync counter right before generating to avoid collisions across multiple users!
+            if (appState.webhookUrl && appState.webhookUrl.trim().length > 10) {
+                await syncWithServer(true);
             }
 
             const selectedOption = unitSelect.options[unitSelect.selectedIndex];
@@ -618,7 +674,7 @@
                 createdAt: new Date().toISOString()
             };
 
-            // Increment Local Counter
+            // Increment local state
             appState.counter += 1;
             appState.history.unshift(record);
             saveState();
@@ -629,11 +685,12 @@
             document.getElementById('generatedUnitDisplay').textContent = unitName;
             document.getElementById('generatedPerihalDisplay').textContent = perihal;
             document.getElementById('generatedTanggalDisplay').textContent = formattedDateStr;
+            document.getElementById('generatedSheetStatus').textContent = appState.webhookUrl ? "Mengirim ke Sheet..." : "Mode Lokal";
 
             // Trigger Result Modal
             document.getElementById('resultModal').classList.remove('hidden');
 
-            // Send to Google Sheets
+            // Send to Google Sheets backend
             if (appState.webhookUrl && appState.webhookUrl.trim().length > 10) {
                 try {
                     const payload = {
@@ -647,17 +704,22 @@
                         seq: currentSeq
                     };
 
-                    fetch(appState.webhookUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify(payload),
-                        redirect: 'follow'
-                    }).catch(e => console.warn("Background POST warning:", e));
-
+                    const res = await sendAppsScriptRequest(appState.webhookUrl, payload);
+                    if (res && (res.status === "success" || res.result === "success")) {
+                        document.getElementById('generatedSheetStatus').textContent = "Tersimpan di Sheet";
+                        document.getElementById('generatedSheetStatus').className = "font-semibold text-emerald-600";
+                    }
                 } catch (err) {
-                    console.error("Failed sending to sheet:", err);
+                    console.error("Failed sending record to sheet:", err);
+                    document.getElementById('generatedSheetStatus').textContent = "Tersimpan Lokal (Sync Ulang Nanti)";
+                    document.getElementById('generatedSheetStatus').className = "font-semibold text-amber-600";
                 }
             }
+
+            // Restore UI
+            btnGenerate.disabled = false;
+            btnIcon.className = "fa-solid fa-wand-magic-sparkles";
+            btnText.textContent = "Generate Nomor Berita Acara";
         }
 
         function renderHistory() {
@@ -738,7 +800,7 @@
             saveState();
             renderHistory();
 
-            showToast("Menghapus data...", "info");
+            showToast("Menghapus data dari Spreadsheet...", "info");
 
             // Send Delete Command to Apps Script
             if (appState.webhookUrl && appState.webhookUrl.trim().length > 10) {
@@ -749,17 +811,12 @@
                         nomor: itemToDelete.nomor
                     };
 
-                    fetch(appState.webhookUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify(payload),
-                        redirect: 'follow'
-                    }).then(() => {
-                        showToast("Data berhasil dihapus dari HP & Spreadsheet!", "success");
-                    }).catch(() => {
-                        showToast("Terhapus di HP, gagal terhubung ke Sheet", "warning");
-                    });
-
+                    const res = await sendAppsScriptRequest(appState.webhookUrl, payload);
+                    if (res && (res.status === "success" || res.result === "success")) {
+                        showToast("Data berhasil dihapus dari Sheet & HP!", "success");
+                    } else {
+                        showToast("Terhapus di HP, periksa Google Sheet.", "warning");
+                    }
                 } catch (err) {
                     console.error("Spreadsheet delete error:", err);
                     showToast("Terhapus di HP, gagal terhubung ke Sheet", "warning");

@@ -409,6 +409,10 @@
                     console.error('Error reading localStorage', e);
                 }
             }
+            
+            // SELALU PAKSA GUNAKAN DEFAULT WEBHOOK JIKA BELUM SET ATAU KOSONG
+   	        appState.webhookUrl = DEFAULT_WEBHOOK_URL;
+            
             if (!appState.pattern) {
                 appState.pattern = DEFAULT_PATTERN;
             }

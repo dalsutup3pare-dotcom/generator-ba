@@ -395,37 +395,36 @@
         });
 
         function loadSavedState() {
-            const saved = localStorage.getItem(APP_STORAGE_KEY);
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    appState = Object.assign(appState, parsed);
+        // 1. Paksa isi Webhook URL di awal
+    appState.webhookUrl = DEFAULT_WEBHOOK_URL;
 
-                    // Reset legacy/old format pattern if stored previously
-                    if (!appState.pattern || appState.pattern.includes('/BA-')) {
-                        appState.pattern = DEFAULT_PATTERN;
-                    }
-                } catch (e) {
-                    console.error('Error reading localStorage', e);
-                }
-            }
+    const saved = localStorage.getItem(APP_STORAGE_KEY);
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            // Gabungkan data simpanan (riwayat & counter)
+            appState = Object.assign(appState, parsed);
             
-            // SELALU PAKSA GUNAKAN DEFAULT WEBHOOK JIKA BELUM SET ATAU KOSONG
-   	        appState.webhookUrl = DEFAULT_WEBHOOK_URL;
-            
-            if (!appState.pattern) {
+            // Tetap kunci Webhook URL ke default
+            appState.webhookUrl = DEFAULT_WEBHOOK_URL;
+
+            if (!appState.pattern || appState.pattern.includes('/BA-')) {
                 appState.pattern = DEFAULT_PATTERN;
             }
-            // Ensure valid Webhook URL is set
-            if (!appState.webhookUrl || appState.webhookUrl.trim() === '') {
-                appState.webhookUrl = DEFAULT_WEBHOOK_URL;
-            }
-            document.getElementById('nextCounterDisplay').textContent = String(appState.counter).padStart(3, '0');
-            document.getElementById('sheetWebhookUrl').value = appState.webhookUrl || '';
-            document.getElementById('patternInput').value = appState.pattern;
-            document.getElementById('customCounterInput').value = appState.counter;
+        } catch (e) {
+            console.error('Error reading localStorage', e);
         }
+    }
 
+    if (!appState.pattern) {
+        appState.pattern = DEFAULT_PATTERN;
+    }
+
+    document.getElementById('nextCounterDisplay').textContent = String(appState.counter).padStart(3, '0');
+    document.getElementById('sheetWebhookUrl').value = appState.webhookUrl;
+    document.getElementById('patternInput').value = appState.pattern;
+    document.getElementById('customCounterInput').value = appState.counter;
+}
         function saveState() {
             localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appState));
             updateSyncStatusUI();
